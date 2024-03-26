@@ -1,5 +1,4 @@
 import SimpleLightbox from 'simplelightbox';
-
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const images = [
@@ -68,49 +67,26 @@ const images = [
   },
 ];
 
-const gallery = document.querySelector('.gallery');
+const container = document.querySelector('.gallery');
+container.insertAdjacentHTML('beforeend', createGalleryMarkup(images));
 
-const createGalleryItem = ({ preview, original, description }) => {
-  return `
-    <li class="gallery-item">
-      <a class="gallery-link" href="${original}">
-        <img
-          class="gallery-image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}"
-        />
-      </a>
-    </li>
-  `;
-};
-
-const galleryMarkup = images.reduce(
-  (event, image) => event + createGalleryItem(image),
-  ''
-);
-
-gallery.insertAdjacentHTML('beforeend', galleryMarkup);
-
-// const lightbox = basicLightbox.create(`
-//     <img src="" class="lightbox-image">
-// `);
-
-// gallery.addEventListener('click', event => {
-//   event.preventDefault();
-//   const { target } = event;
-//   if (target.nodeName !== 'IMG') {
-//     return;
-//   }
-//   const largeImageURL = target.dataset.source;
-//   const alt = target.alt;
-//   lightbox.element().querySelector('.lightbox-image').src = largeImageURL;
-//   lightbox.element().querySelector('.lightbox-image').alt = alt;
-//   lightbox.show();
-// });
-
-const lightbox = new SimpleLightbox('.gallery li a');
-
-lightbox.on('show.simplelightbox', function (e) {
-  e.preventDefault();
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
 });
+
+function createGalleryMarkup(images) {
+  return images.map(image => createGalleryItem(image)).join('');
+}
+
+function createGalleryItem({ preview, original, description }) {
+  return `<li class="gallery-item">
+                <a class="gallery-link" href="${original}">
+                    <img src="${preview}" 
+                         alt="${description}" 
+                         class="gallery-image" 
+                         width="360" 
+                         height="200">
+                </a>
+            </li>`;
+}
